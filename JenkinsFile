@@ -1,0 +1,38 @@
+pipeline {
+    agent any
+    stages {
+        stage("Clone Git Repository") {
+            steps {
+                git (
+                    url: "https://github.com/MoriMokata/angular-web-starter-2.git",
+                    branch: "main"
+                )
+            }
+        }
+        stage("Install Dependency") {
+            steps {
+                dir('./angular-web-starter-2'){
+                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
+                        sh '''
+                            npm install
+                        '''
+                    }
+                }
+                    
+            }
+        }
+        stage("Build and start app") {
+            steps {
+                dir('./angular-web-starter-2'){
+                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
+                        sh '''
+                            npm run build
+                            npm run start &
+                        '''
+                    }
+                }
+                    
+            }
+        }
+    }
+}

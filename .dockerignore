@@ -1,0 +1,13 @@
+# Ignore development and build-related files and directories
+node_modules
+npm-debug.log
+yarn-error.log
+.vscode
+.DS_Store
+
+# Ignore Vite.js build output (assuming it's in the "dist" directory)
+/dist
+
+# Ignore any local environment files (adjust this as needed)
+.env
+.env.local

@@ -4,34 +4,57 @@ pipeline {
         stage("Clone Git Repository") {
             steps {
                 git (
-                    url: "https://github.com/MoriMokata/angular-web-starter-2.git",
+                    url: "https://github.com/ThanaponChanlaor/somethingGame_FE.git",
                     branch: "main"
                 )
             }
         }
-        stage("Install Dependency") {
+        stage("Build Docker Image") {
             steps {
-                dir('./angular-web-starter-2'){
-                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
-                        sh '''
-                            npm install
-                        '''
-                    }
-                }
-                    
+                sh '''
+                    docker build -t something_game-ui .
+                '''
             }
         }
-        stage("Build and start app") {
+        stage("Run Docker Container") {
             steps {
-                dir('./angular-web-starter-2'){
-                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
-                        sh '''
-                            npm run build
-                            npm run start &
-                        '''
-                    }
-                }
+                sh '''
+                    docker run -p 5173:80 -d --rm --name something_game-ui something_game-ui
+                '''
+            }
+        }
+        
+        // stage("Install Dependency") {
+        //     steps {
+        //         nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
+        //             sh '''
+        //                 npm install
+        //             '''
+        //         }
                     
+        //     }
+        // }
+        // stage("Build App") {
+        //     steps {
+        //       nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
+        //             sh '''
+        //                 npm run build
+        //             '''
+        //         }
+        //     }
+        // }
+        // stage("Start App") {
+        //     steps {
+        //       nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
+        //             sh '''
+        //                 npm run dev
+        //             '''
+        //         }
+        //     }
+        // }
+        stage("Clean Workspace") {
+            steps {
+                cleanWs()
             }
         }
     }

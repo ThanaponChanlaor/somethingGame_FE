@@ -1,18 +1,20 @@
-# build section
-FROM node:18.20-alpine AS build
-WORKDIR /build
+# Use an official Node.js runtime as the base image
+FROM node:14-slim
 
-COPY ./package.json .
+# Set the working directory inside the container
+WORKDIR /app
 
-RUN npm install --emit=env
+# Copy package.json and package-lock.json to the container
+COPY package*.json ./
 
+# Install project dependencies
+RUN npm install
+
+# Copy the entire project to the container
 COPY . .
 
-RUN npm run build
+# Expose the port your app runs on (if needed)
+# EXPOSE 5173
 
-# create server
-FROM nginx:latest
-
-COPY ./nginx.conf /etc/nginx/nginx.conf
-
-COPY --from=build /build/dist /usr/share/nginx/html
+# Define the command to run your application
+CMD ["npm", "run", "dev"]

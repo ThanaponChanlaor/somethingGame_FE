@@ -4,57 +4,34 @@ pipeline {
         stage("Clone Git Repository") {
             steps {
                 git (
-                    url: "https://github.com/ThanaponChanlaor/somethingGame_FE.git",
+                    url: "https://github.com/MoriMokata/angular-web-starter-2.git",
                     branch: "main"
                 )
             }
         }
-        stage("Build Docker Image") {
+        stage("Install Dependency") {
             steps {
-                sh '''
-                    docker build -t something_game-ui .
-                '''
-            }
-        }
-        stage("Run Docker Container") {
-            steps {
-                sh '''
-                    docker run -p 5173:80 -d --rm --name something_game-ui something_game-ui
-                '''
-            }
-        }
-        
-        // stage("Install Dependency") {
-        //     steps {
-        //         nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
-        //             sh '''
-        //                 npm install
-        //             '''
-        //         }
+                dir('./angular-web-starter-2'){
+                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
+                        sh '''
+                            npm install
+                        '''
+                    }
+                }
                     
-        //     }
-        // }
-        // stage("Build App") {
-        //     steps {
-        //       nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
-        //             sh '''
-        //                 npm run build
-        //             '''
-        //         }
-        //     }
-        // }
-        // stage("Start App") {
-        //     steps {
-        //       nodejs(nodeJSInstallationName: 'node-v.18.20.0') {
-        //             sh '''
-        //                 npm run dev
-        //             '''
-        //         }
-        //     }
-        // }
-        stage("Clean Workspace") {
+            }
+        }
+        stage("Build and start app") {
             steps {
-                cleanWs()
+                dir('./angular-web-starter-2'){
+                    nodejs(nodeJSInstallationName: 'node-v.18.10.0') {
+                        sh '''
+                            npm run build
+                            npm run start &
+                        '''
+                    }
+                }
+                    
             }
         }
     }
